@@ -1,6 +1,6 @@
 import pygame
 from fsm import FSM
-class pan: 
+class Pan: 
     C = 'cooking'
     R = 'raw'
     D = 'done'
@@ -9,7 +9,7 @@ class pan:
         self.game = game
 
         # Load initial image
-        self.background = pygame.image.load('insert image here')
+        self.background = pygame.image.load('pan.png')
         self.rect = self.image.get_rect()
 
         # Set rectangle that is the screen
