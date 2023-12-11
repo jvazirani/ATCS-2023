@@ -1,39 +1,42 @@
-import pygame
+# pan.py
 from fsm import FSM
-class Pan: 
-    C = 'cooking'
-    R = 'raw'
-    D = 'done'
-    def __init__(self, game, x , y):
+import pygame
 
+class Pan:
+    COOKING = 'cooking'
+    RAW = 'raw'
+    DONE = 'done'
+    BURNED = 'burned'
+
+    # Inputs
+    TIMER_UP = "tu"
+    FINISH = 'finish'
+    START  = 'start timer'
+    RESTART = 'restart'
+
+    def __init__(self, game):
         self.game = game
-
-        # Load initial image
-        self.background = pygame.image.load('pan.png')
+        self.image = pygame.image.load("pan.png")
+        self.image = pygame.transform.scale(self.image, (game.pan_width, game.pan_height))
         self.rect = self.image.get_rect()
 
-        # Set rectangle that is the screen
-        self.width = self.image.get_width()
-        self.height = self.image.get_height()
-        self.rect.centerx = x
-        self.rect.centery = y
-
         # Create the finite state machine with initial state
-        self.fsm = FSM(self.R)
+        self.fsm = FSM(self.RAW)
         self.init_fsm()
 
-    def init_fsm(self): 
-        #add all transiitons 
-        pass 
+    def init_fsm(self):
+        self.fsm.add_transition(self.START, self.RAW, None, self.COOKING)
+        self.fsm.add_transition(self.TIMER_UP, self.COOKING, None, self.DONE)
+        self.fsm.add_transition(self.TIMER_UP, self.DONE, None, self.BURNED)
+        self.fsm.add_transition(self.BURNED, self.RESTART, None, self.RAW)
+        self.fsm.add_transition(self.COOKING, self.RESTART, None, self.RAW)
+        self.fsm.add_transition(self.DONE, self.RESTART, None, self.RAW)
 
     def get_state(self):
-        # TODO: Return the maze bot's current state
         return self.fsm.current_state
     
     def update(self):
-        # TODO: Use the finite state machine to process input
-        # print(self.get_state(), self.get_next_space())
         self.fsm.process(self.get_next_space())
 
     def draw(self, screen):
-        screen.blit(self.image, (self.rect.x , self.rect.y ))
+        screen.blit(self.image, (self.rect.x, self.rect.y))
