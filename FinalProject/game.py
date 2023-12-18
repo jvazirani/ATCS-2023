@@ -1,91 +1,31 @@
-# import pygame
-# from pan import Pan
-
-# #screen dimensions 
-# WIDTH, HEIGHT = 800, 600
-
-# class Game:
-#     def __init__(self):
-#         self.reset_game()
-#         background_image = pygame.image.load("background.png")
-#         background_image = pygame.transform.scale(background_image, (WIDTH, HEIGHT))
-
-
-#     def reset_game(self):
-#         # state of pan goes to raw
-#         pass
-
-#     def check_win(self):
-#         pass 
-
-#     def check_fail(self): 
-#         # should probably take in food item and time cooking for 
-#         pass 
-
-#     def play_game(self):
-#         while self.check_fail != True:
-#             #draw screen
-#             if self.check_win():
-#                 print(" wins!")
-#                 #draw win screen
-#                 break
-
-#     def run(self):
-#         # Main game loop
-#         running = True
-
-#         # Draw the initial screen
-#         self.screen.fill()
-#         self.blocks.draw(self.screen)
-#         self.mango.draw(self.screen)
-        
-#         while running:
-#             # Set fps to 120
-#             self.dt += self.clock.tick(120)
-
-#             # Handle closing the window
-#             for event in pygame.event.get():
-#                 if event.type == pygame.QUIT:
-#                     running = False
-            
-#             # Only update every 120 fps
-#             if self.dt > 120:
-#                 self.dt = 0
-#                 self.mango.update()
-
-#                 # Draw to the screen
-#                 self.screen.fill(self.BACKGROUND_COLOR)
-#                 self.blocks.draw(self.screen)
-#                 self.mango.draw(self.screen)
-
-#             # Update the display
-#             pygame.display.flip()
-
-#         # Quit Pygame
-#         pygame.quit()
-#         sys.exit()
-
-# if __name__ == "__main__":
-#     pm = Game()
-#     pm.run()
-# cooking_game.py
 # game.py
 from pan import Pan
+from food import Food
 from fsm import FSM
 import pygame
 import sys
+from button import Button
+from timer import Timer
 
 class Game:
     def __init__(self):
         pygame.init()
+        # Sets screen size
         self.screen = pygame.display.set_mode((800, 600))
         pygame.display.set_caption("Cooking Game")
         self.clock = pygame.time.Clock()
 
-        self.pan_width = 100
-        self.pan_height = 100
-
         self.pan = Pan(self)
+        self.food = Food("Egg", (5000, 10000))  # Adjust cooking time range for Egg
+        self.dt = 0
+        self.timer = Timer(100, 200)
+        
+        self.is_down_arrow_pressed = False 
+        self.users_time = 0
+
+        self.start_button = Button(100, 100, 50, 50, 'start')
+        self.end_button = Button(200, 100, 50, 50, 'stop')
+        self.reset_button = Button(300, 100, 50, 50, 'reset')
 
     def run(self):
         while True:
@@ -93,30 +33,63 @@ class Game:
                 if event.type == pygame.QUIT:
                     pygame.quit()
                     sys.exit()
-
+                if event.type == pygame.MOUSEBUTTONDOWN: 
+                    if self.start_button.collidepoint(event.pos): 
+                        self.start_timer()
+                    elif self.end_button.collidepoint(event.pos): 
+                        self.stop_timer()
+                    elif self.reset_button.collidepoint(event.pos): 
+                        self.reset_timer()
             self.update()
             self.draw()
             pygame.display.flip()
-            self.clock.tick(30)
+
+            self.dt = self.clock.tick(30)
+
+    def get_elapsed_time(self):
+        return self.dt
 
     def update(self):
-        self.pan.update()
+        if self.pan.get_state() == Pan.COOKING: 
+            self.food.update_cook_time(self.dt)
+
+    def start_timer(self): 
+        self.pan.update(Pan.START)
+        self.timer.start()
+
+    def stop_timer(self): 
+        # if its raw cooked or burnt update accordingly
+        self.timer.stop()
+        if self.pan.get_state() == Pan.BURNED: 
+            self.pan.update(Pan.TIMER_LATE)
+        elif self.pan.get_state() == Pan.DONE: 
+            self.pan.update(Pan.TIMER_GOOD)
+        elif self.pan.get_state() == Pan.RAW: 
+            self.pan.update(Pan.TIMER_EARLY)
+
+
+    def reset_timer(self): 
+        self.timer.reset()
 
     def draw(self):
         self.screen.fill((255, 255, 255))
+        pygame.draw.rect(self.screen, (255, 255, 255), (0, 0, 800, 800))
         self.pan.draw(self.screen)
+        if self.pan.get_state() == Pan.BURNED: 
+            self.food.draw_burned(self.screen, 400, 300)  
 
-    def start_cooking(self):
-        print("Cooking has started...")
+        elif self.pan.get_state() == Pan.DONE: 
+            self.food.draw_cooked(self.screen, 400, 300) 
 
-    def finish_cooking(self):
-        cooking_time = 7  # Replace with your actual cooking time logic
-        if 5 <= cooking_time <= 10:
-            print("Food is cooked!")
-            self.pan.fsm.process(self.pan.DONE)
-        else:
-            print("Oops! Food is burned.")
-            self.pan.fsm.process(self.pan.BURNED)
+        elif self.pan.get_state() == Pan.RAW: 
+            self.food.draw_raw(self.screen, 400, 300)  
+        else: 
+            self.food.draw_raw(self.screen, 400, 300)  
+
+        self.start_button.draw(self.screen)
+        self.end_button.draw(self.screen)
+        self.reset_button.draw(self.screen)
+        self.timer.draw(self.screen)
 
 if __name__ == "__main__":
     game = Game()

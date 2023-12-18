@@ -71,8 +71,8 @@ class FSM:
             input_symbol (anything): The input to process
         """
         # TODO: Implement process
-        action, state = self.get_transition(input_symbol, self.current_state)
+        action, self.current_state = self.get_transition(input_symbol, self.current_state)
         if action != None: 
             action()
-        if state != None: 
-            self.current_state = state
+        # if state != None: 
+        #     self.current_state = state
