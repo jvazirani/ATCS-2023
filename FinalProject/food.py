@@ -34,13 +34,12 @@ class Food:
         screen.blit(self.image, (x + 50, y)) 
 
     def draw_raw(self, screen, x, y):
-        screen.blit(self.image_raw, (x - 50, y))  # Adjust the offset (-50) based on your preference
+        screen.blit(self.image_raw, (x - 50, y))  
 
     def draw_cooked(self, screen, x, y):
-        screen.blit(self.image_cooked, (x - 50, y))  # Adjust the offset (-50) based on your preference
-
+        screen.blit(self.image_cooked, (x - 50, y))  
     def draw_burned(self, screen, x, y):
-        screen.blit(self.image_burned, (x - 50, y))  # Adjust the offset (-50) based on your preference
+        screen.blit(self.image_burned, (x - 50, y))  
 
         
 
