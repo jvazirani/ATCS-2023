@@ -2,13 +2,13 @@
 import pygame
 
 class Food:
-    def __init__(self, name, cooking_time_range):
+    def __init__(self, name, cooking_time_range, raw_image, cooked_image, burned_image):
         self.name = name
         self.cooking_time_range = cooking_time_range
         self.cook_time = 0
-        self.image_raw = pygame.image.load("raw.png")  
-        self.image_cooked = pygame.image.load("cooked.png")  
-        self.image_burned = pygame.image.load("burned.png")  
+        self.image_raw = pygame.image.load(raw_image)  
+        self.image_cooked = pygame.image.load(cooked_image)  
+        self.image_burned = pygame.image.load(burned_image)  
         self.image = self.image_raw
 
     def update_cook_time(self, elapsed_time):
@@ -18,6 +18,8 @@ class Food:
         self.cook_time = 0
 
     def is_cooked(self):
+        print(self.cook_time)
+        print(self.cooking_time_range)
         return self.cook_time >= self.cooking_time_range[0] and self.cook_time <= self.cooking_time_range[1]
 
     def is_burned(self):

@@ -32,9 +32,9 @@ class Pan:
 
     def init_fsm(self):
         self.fsm.add_transition(self.START, self.START_RAW, None, self.COOKING)
-        self.fsm.add_transition(self.TIMER_EARLY, self.COOKING, None, self.DONE)
-        self.fsm.add_transition(self.TIMER_GOOD, self.COOKING, None, self.BURNED)
-        self.fsm.add_transition(self.TIMER_LATE, self.COOKING, None, self.RAW)
+        self.fsm.add_transition(self.TIMER_EARLY, self.COOKING, None, self.RAW)
+        self.fsm.add_transition(self.TIMER_GOOD, self.COOKING, None, self.DONE)
+        self.fsm.add_transition(self.TIMER_LATE, self.COOKING, None, self.BURNED)
         self.fsm.add_transition(self.RESTART, self.BURNED, None, self.START_RAW)
         self.fsm.add_transition(self.RESTART, self.COOKING, None, self.START_RAW)
         self.fsm.add_transition(self.RESTART, self.DONE, None, self.START_RAW)
