@@ -7,7 +7,7 @@ class Button(pygame.Rect):
 
     def draw(self, screen):
         pygame.draw.rect(screen, 'Red', self)
-        font = pygame.font.Font(None, 36)  # You can adjust the font size as needed
-        text = font.render(self.name, True, (255, 255, 255))  # White text
+        font = pygame.font.Font(None, 36)  
+        text = font.render(self.name, True, (0, 0, 0))  # White text
         text_rect = text.get_rect(center=self.center)
         screen.blit(text, text_rect)

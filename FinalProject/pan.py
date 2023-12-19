@@ -1,4 +1,3 @@
-# pan.py
 from fsm import FSM
 import pygame
 
@@ -6,14 +5,13 @@ class Pan:
 
     PAN_WIDTH = 400 
     PAN_HEIGHT = 400
+    # States
     COOKING = 'cooking'
     RAW = 'raw'
     DONE = 'done'
     BURNED = 'burned'
     START_RAW = 'started raw'
-
-    # Inputs
-    # issue: sometimes input is time, sometimes is timer up
+    # Actions
     TIMER_EARLY = "tu"
     TIMER_GOOD = 'TG'
     TIMER_LATE = 'TL'
@@ -31,6 +29,7 @@ class Pan:
         self.init_fsm()
 
     def init_fsm(self):
+        # Add transitions 
         self.fsm.add_transition(self.START, self.START_RAW, None, self.COOKING)
         self.fsm.add_transition(self.TIMER_EARLY, self.COOKING, None, self.RAW)
         self.fsm.add_transition(self.TIMER_GOOD, self.COOKING, None, self.DONE)

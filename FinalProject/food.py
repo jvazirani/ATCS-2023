@@ -2,6 +2,7 @@
 import pygame
 
 class Food:
+    # Each food has a name, a cooking time range, and three images
     def __init__(self, name, cooking_time_range, raw_image, cooked_image, burned_image):
         self.name = name
         self.cooking_time_range = cooking_time_range
@@ -11,12 +12,13 @@ class Food:
         self.image_burned = pygame.image.load(burned_image)  
         self.image = self.image_raw
 
+    # Keeps track of current time cooking
     def update_cook_time(self, elapsed_time):
         self.cook_time += elapsed_time
         
     def reset_cook_time(self):
         self.cook_time = 0
-
+    # Checks if the food is cooked, burned, or raw based on if it is in the range of the cooking time
     def is_cooked(self):
         print(self.cook_time)
         print(self.cooking_time_range)
@@ -29,15 +31,6 @@ class Food:
         return self.cook_time < self.cooking_time_range[0]
 
     def draw(self, screen, x, y):
-        # if self.is_raw():
-        #     # Draw towards the left
-        #     screen.blit(self.image_raw, (x - 50, y))  # Adjust the offset (-50) based on your preference
-        # elif self.is_cooked():
-        #     # Draw in the middle
-        #     screen.blit(self.image_cooked, (x, y))
-        # elif self.is_burned():
-        #     # Draw towards the right
-        #     screen.blit(self.image_burned, (x + 50, y)) 
         screen.blit(self.image, (x + 50, y)) 
 
     def draw_raw(self, screen, x, y):
